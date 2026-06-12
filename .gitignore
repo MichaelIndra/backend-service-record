@@ -1,0 +1,42 @@
+# 1. File Binary Hasil Compile (Aplikasi Utama)
+# --------------------------------------------------
+service-record-api
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+bin/
+
+# 2. File Environment (Kredensial Rahasia & Sensitif)
+# --------------------------------------------------
+.env
+.env.production
+.env.local
+.env.*.local
+
+# 3. Folder Penyimpanan Gambar / Media Asset (Lokal)
+# --------------------------------------------------
+uploads/
+
+# 4. Folder Log Aplikasi
+# --------------------------------------------------
+logs/
+*.log
+
+# 5. Folder Dependency Node.js (Jika tidak sengaja terbuat)
+# --------------------------------------------------
+node_modules/
+package-lock.json
+
+# 6. File Konfigurasi OS & IDE / Code Editor
+# --------------------------------------------------
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+.DS_Store
+Thumbs.db

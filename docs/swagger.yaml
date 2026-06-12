@@ -1,0 +1,812 @@
+basePath: /
+definitions:
+  controllers.BengkelDTO:
+    properties:
+      alamat:
+        type: string
+      jenis_service:
+        type: string
+      kecamatan:
+        type: string
+      kelurahan:
+        type: string
+      kota_kab:
+        type: string
+      nama:
+        type: string
+      no_telp:
+        type: string
+      provinsi:
+        type: string
+      tipe:
+        type: string
+    required:
+    - alamat
+    - jenis_service
+    - kecamatan
+    - kelurahan
+    - kota_kab
+    - nama
+    - provinsi
+    - tipe
+    type: object
+  controllers.KendaraanDTO:
+    properties:
+      jenis:
+        enum:
+        - Mobil
+        - Motor
+        type: string
+      manufaktur:
+        type: string
+      nama:
+        type: string
+      no_polisi:
+        type: string
+      tahun:
+        type: string
+      warna:
+        type: string
+    required:
+    - jenis
+    - manufaktur
+    - nama
+    - no_polisi
+    - tahun
+    - warna
+    type: object
+  models.Bengkel:
+    properties:
+      aktif:
+        type: boolean
+      alamat:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: integer
+      jenis_service:
+        type: string
+      kecamatan:
+        type: string
+      kelurahan:
+        type: string
+      kota_kab:
+        type: string
+      nama:
+        type: string
+      no_telp:
+        type: string
+      provinsi:
+        type: string
+      type:
+        example: MOBIL BBM
+        type: string
+      updated_at:
+        type: string
+    type: object
+  models.DetailService:
+    properties:
+      biaya:
+        type: number
+      created_at:
+        type: string
+      foto_service:
+        type: string
+      id:
+        type: integer
+      nama_service:
+        type: string
+      transaction_id:
+        type: integer
+      updated_at:
+        type: string
+    type: object
+  models.DetailSparepart:
+    properties:
+      batas_km:
+        type: string
+      batas_waktu:
+        type: string
+      created_at:
+        type: string
+      foto_sparepart:
+        type: string
+      harga_satuan:
+        type: number
+      id:
+        type: integer
+      kode_sparepart:
+        type: string
+      nama_sparepart:
+        type: string
+      qty:
+        type: number
+      remind:
+        type: boolean
+      transaction_id:
+        type: integer
+      updated_at:
+        type: string
+    type: object
+  models.Kendaraan:
+    properties:
+      aktif:
+        type: boolean
+      created_at:
+        type: string
+      jenis:
+        type: string
+      manufaktur:
+        type: string
+      nama:
+        type: string
+      no_polisi:
+        type: string
+      tahun:
+        type: string
+      updatedAt:
+        type: string
+      warna:
+        type: string
+    type: object
+  models.Transaction:
+    properties:
+      Bengkel:
+        $ref: '#/definitions/models.Bengkel'
+      bengkel_id:
+        type: integer
+      biaya_bruto:
+        type: number
+      biaya_netto:
+        type: number
+      created_at:
+        type: string
+      details_service:
+        description: Relasi
+        items:
+          $ref: '#/definitions/models.DetailService'
+        type: array
+      details_sparepart:
+        items:
+          $ref: '#/definitions/models.DetailSparepart'
+        type: array
+      diskon:
+        type: number
+      foto_nota:
+        items:
+          type: string
+        type: array
+      id:
+        type: integer
+      kendaraan:
+        $ref: '#/definitions/models.Kendaraan'
+      km:
+        type: string
+      no_nota:
+        type: string
+      no_polisi:
+        type: string
+      ppn:
+        type: number
+      tanggal_masuk:
+        type: string
+      tanggal_selesai:
+        type: string
+      tanggal_transaksi:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  utils.PaginationResult:
+    properties:
+      data: {}
+      limit:
+        example: 10
+        type: integer
+      page:
+        example: 1
+        type: integer
+      total_data:
+        example: 100
+        type: integer
+      total_page:
+        example: 10
+        type: integer
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: API untuk mencatat servis kendaraan dan manajemen foto per transaksi.
+  title: Service Kendaraan API
+  version: "1.0"
+paths:
+  /api/bengkel:
+    get:
+      description: 'Mengambil data bengkel. Contoh: ?page=1&limit=5 atau ?page=2&limit=15'
+      parameters:
+      - description: Filter Aktif (true, false, all)
+        in: query
+        name: aktif
+        type: string
+      - description: Tipe Bengkel (mobil bbm, motor bbm, mobil ev, listrik ev, mobil
+          bbm & ev, motor bbm & ev)
+        in: query
+        name: tipe
+        type: string
+      - default: 1
+        description: Halaman ke berapa (default 1)
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Jumlah data per halaman (bisa 5, 10, 15, dll)
+        in: query
+        name: limit
+        type: integer
+      - default: nama
+        description: Kolom untuk sorting (nama, jenis_service, tipe, created_at)
+        in: query
+        name: sort_by
+        type: string
+      - default: asc
+        description: Arah urutan (asc, desc)
+        in: query
+        name: order
+        type: string
+      - description: Cari berdasarkan nama bengkel
+        in: query
+        name: search
+        type: string
+      - description: Filter nama Provinsi
+        in: query
+        name: provinsi
+        type: string
+      - description: Filter nama Kota/Kabupaten
+        in: query
+        name: kota_kab
+        type: string
+      - description: Filter nama Kecamatan
+        in: query
+        name: kecamatan
+        type: string
+      - description: Filter nama Kelurahan
+        in: query
+        name: kelurahan
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Berhasil mengambil data
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.PaginationResult'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/models.Bengkel'
+                  type: array
+              type: object
+      summary: List Semua Bengkel dengan pagination fleksibel
+      tags:
+      - Master Bengkel
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Data Bengkel
+        in: body
+        name: bengkel
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.BengkelDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Bengkel'
+      summary: Tambah Bengkel Baru
+      tags:
+      - Master Bengkel
+  /api/bengkel/{id}:
+    get:
+      description: 'Mengambil data spesifik bengkel berdasarkan ID. Contoh: /api/bengkel/1'
+      parameters:
+      - description: ID Bengkel
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Berhasil mengambil data
+          schema:
+            $ref: '#/definitions/models.Bengkel'
+        "404":
+          description: Data tidak ditemukan
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Ambil Data Bengkel berdasarkan ID
+      tags:
+      - Master Bengkel
+    put:
+      consumes:
+      - application/json
+      description: Mengubah data bengkel
+      parameters:
+      - description: ID Bengkel
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Data Bengkel
+        in: body
+        name: bengkel
+        required: true
+        schema:
+          $ref: '#/definitions/models.Bengkel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Bengkel'
+      summary: Update Data Bengkel
+      tags:
+      - Master Bengkel
+  /api/bengkel/getBengkelByStatus/{status}:
+    get:
+      description: 'Mengambil data Bengkel berdasarkan status. Contoh: /api/bengkel/getBengkelByStatus/'
+      parameters:
+      - description: Status
+        in: path
+        name: status
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Berhasil mengambil data
+          schema:
+            items:
+              $ref: '#/definitions/models.Bengkel'
+            type: array
+        "404":
+          description: Data tidak ditemukan
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Ambil Data Bengkel berdasarkan status
+      tags:
+      - Master Bengkel
+  /api/kendaraan:
+    get:
+      description: 'Mengambil data kendaraan. Contoh: ?page=1&limit=5 atau ?page=2&limit=15'
+      parameters:
+      - default: 1
+        description: Halaman ke berapa (default 1)
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Jumlah data per halaman (bisa 5, 10, 15, dll)
+        in: query
+        name: limit
+        type: integer
+      - description: Filter Aktif (true, false, all)
+        in: query
+        name: aktif
+        type: string
+      - default: nama
+        description: Kolom untuk sorting (nama, manufaktur, created_at)
+        in: query
+        name: sort_by
+        type: string
+      - default: asc
+        description: Arah urutan (asc, desc)
+        in: query
+        name: order
+        type: string
+      - description: Cari berdasarkan nama kendaraan
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Berhasil mengambil data
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.PaginationResult'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/models.Kendaraan'
+                  type: array
+              type: object
+      summary: Ambil list kendaraan dengan pagination fleksibel
+      tags:
+      - Master Kendaraan
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 'Data Kendaraan (Enum Jenis: Mobil, Motor)'
+        in: body
+        name: kendaraan
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.KendaraanDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Kendaraan'
+      summary: Tambah Kendaraan Baru
+      tags:
+      - Master Kendaraan
+  /api/kendaraan/{no_polisi}:
+    get:
+      description: 'Mengambil data spesifik kendaraan berdasarkan ID. Contoh: /api/kendaraan/G1234'
+      parameters:
+      - description: No Polisi Kendaraan
+        in: path
+        name: no_polisi
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Berhasil mengambil data
+          schema:
+            items:
+              $ref: '#/definitions/models.Kendaraan'
+            type: array
+        "404":
+          description: Data tidak ditemukan
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Ambil Data Kendaraan berdasarkan ID
+      tags:
+      - Master Kendaraan
+    put:
+      consumes:
+      - application/json
+      description: Mengubah data Kendaraan
+      parameters:
+      - description: No Polisi
+        in: path
+        name: no_polisi
+        required: true
+        type: string
+      - description: Data Kendaraan
+        in: body
+        name: kendaraan
+        required: true
+        schema:
+          $ref: '#/definitions/models.Kendaraan'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Kendaraan'
+      summary: Update Data Kendaraan
+      tags:
+      - Master Kendaraan
+  /api/kendaraan/getKendaraanByStatus/{status}:
+    get:
+      description: 'Mengambil data Kendaraan berdasarkan status. Contoh: /api/kendaraan/getKendaraanByStatus/'
+      parameters:
+      - description: Status
+        in: path
+        name: status
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Berhasil mengambil data
+          schema:
+            items:
+              $ref: '#/definitions/models.Kendaraan'
+            type: array
+        "404":
+          description: Data tidak ditemukan
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Ambil Data Kendaraan berdasarkan status
+      tags:
+      - Master Kendaraan
+  /api/transaction:
+    get:
+      description: Mengambil data bengkel.
+      parameters:
+      - default: 1
+        description: Halaman ke berapa (default 1)
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Jumlah data per halaman (bisa 5, 10, 15, dll)
+        in: query
+        name: limit
+        type: integer
+      - default: tanggal_transaksi
+        description: Kolom untuk sorting (tanggal_transaksi, created_at)
+        in: query
+        name: sort_by
+        type: string
+      - default: desc
+        description: Arah urutan (asc, desc)
+        in: query
+        name: order
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Transaction'
+      summary: Ambil semua list transaksi
+      tags:
+      - Transaction
+    post:
+      consumes:
+      - multipart/form-data
+      description: Simpan header transaksi beserta banyak detail service dan sparepart
+        sekaligus.
+      parameters:
+      - description: No Polisi Kendaraan
+        in: formData
+        name: no_polisi
+        required: true
+        type: string
+      - description: ID Bengkel
+        in: formData
+        name: bengkel_id
+        required: true
+        type: integer
+      - description: Total Biaya (Bruto)
+        in: formData
+        name: biaya_bruto
+        required: true
+        type: number
+      - description: Total Diskon
+        in: formData
+        name: diskon
+        required: true
+        type: number
+      - description: Total Bayar (Netto)
+        in: formData
+        name: biaya_netto
+        required: true
+        type: number
+      - description: 'Format: 2006-01-02'
+        in: formData
+        name: tanggal_transaksi
+        required: true
+        type: string
+      - description: 'Format: 2006-01-02'
+        in: formData
+        name: tanggal_masuk
+        required: true
+        type: string
+      - description: 'Format: 2006-01-02'
+        in: formData
+        name: tanggal_selesai
+        required: true
+        type: string
+      - description: Kilometer Kendaraan
+        in: formData
+        name: km
+        type: string
+      - description: Nomor Nota Manual
+        in: formData
+        name: no_nota
+        type: string
+      - collectionFormat: multi
+        description: Foto Nota Utama (Bisa upload lebih dari 1 foto)
+        in: formData
+        items:
+          type: file
+        name: foto_nota[]
+        type: array
+      - collectionFormat: multi
+        description: Daftar Nama Service
+        in: formData
+        items:
+          type: string
+        name: service_name[]
+        type: array
+      - collectionFormat: multi
+        description: Daftar Harga Service
+        in: formData
+        items:
+          type: number
+        name: service_price[]
+        type: array
+      - collectionFormat: multi
+        description: Daftar Foto Service
+        in: formData
+        items:
+          type: file
+        name: foto_service[]
+        type: array
+      - collectionFormat: multi
+        description: Daftar Nama Sparepart
+        in: formData
+        items:
+          type: string
+        name: sparepart_name[]
+        type: array
+      - collectionFormat: multi
+        description: Daftar Kode Sparepart
+        in: formData
+        items:
+          type: string
+        name: sparepart_code[]
+        type: array
+      - collectionFormat: multi
+        description: Daftar Harga Sparepart
+        in: formData
+        items:
+          type: number
+        name: sparepart_price[]
+        type: array
+      - collectionFormat: multi
+        description: Daftar Batas KM Sparepart
+        in: formData
+        items:
+          type: string
+        name: sparepart_batas_km[]
+        type: array
+      - collectionFormat: multi
+        description: Daftar Batas Waktu Sparepart
+        in: formData
+        items:
+          type: string
+        name: sparepart_batas_waktu[]
+        type: array
+      - collectionFormat: multi
+        description: Daftar Remind Sparepart
+        in: formData
+        items:
+          type: boolean
+        name: sparepart_remind[]
+        type: array
+      - collectionFormat: multi
+        description: Daftar Qty Sparepart
+        in: formData
+        items:
+          type: number
+        name: sparepart_qty[]
+        type: array
+      - collectionFormat: multi
+        description: Daftar Foto Sparepart
+        in: formData
+        items:
+          type: file
+        name: foto_sparepart[]
+        type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Transaction'
+      summary: Simpan Transaksi Lengkap
+      tags:
+      - Transaction
+  /api/transaction/{id}:
+    delete:
+      description: Menghapus header transaksi, detail service, detail sparepart, serta
+        menyapu bersih folder foto terkait di uploads.
+      parameters:
+      - description: ID Transaksi
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Transaksi dan seluruh aset berhasil dihapus
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Transaksi tidak ditemukan
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Hapus Transaksi Bersih (Clean Delete)
+      tags:
+      - Transaction
+    get:
+      description: Mengambil data transaksi lengkap termasuk riwayat service dan sparepartnya
+        menggunakan ID dari URL
+      parameters:
+      - description: ID Transaksi
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Data transaksi ditemukan
+          schema:
+            $ref: '#/definitions/models.Transaction'
+        "404":
+          description: Data transaksi tidak ditemukan
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Ambil detail satu transaksi berdasarkan ID beserta semua detailnya
+      tags:
+      - Transaction
+swagger: "2.0"
