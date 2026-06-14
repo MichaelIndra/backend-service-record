@@ -2,6 +2,11 @@
 
 Semua perubahan penting pada project **Service Record API** akan dicatat di file ini.
 
+## [1.0.1] - 2026-06-13
+
+### Fixed
+- **CORS**: update cors ketika dihit dari tempat lain
+
 ## [1.0.0] - 2026-06-12
 
 ### Added

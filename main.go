@@ -25,12 +25,19 @@ func main() {
 	r := gin.Default()
 
 	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:3000"}, // Mengizinkan frontend localhost:3000
-		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
-		AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization"},
-		ExposeHeaders:    []string{"Content-Length"},
-		AllowCredentials: true,
-	}))
+    // Fungsi ini akan memeriksa setiap request yang masuk
+    AllowOriginFunc: func(origin string) bool {
+        // Opsi A: Izinkan SEMUA origin secara dinamis (Sama seperti "*", tapi mendukung AllowCredentials)
+        return true 
+        
+        // Opsi B: Atau beri validasi tertentu, misal hanya domain yang mengandung kata 'bengkel'
+        // return strings.Contains(origin, "bengkel")
+    },
+    AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
+    AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization"},
+    ExposeHeaders:    []string{"Content-Length"},
+    AllowCredentials: true,
+}))
 	port := os.Getenv("PORT")
 
 	if port == "" {
