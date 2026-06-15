@@ -2,6 +2,10 @@
 
 Semua perubahan penting pada project **Service Record API** akan dicatat di file ini.
 
+## [1.0.2] - 2026-06-13
+
+### Fixed
+
 ## [1.0.1] - 2026-06-13
 
 ### Fixed

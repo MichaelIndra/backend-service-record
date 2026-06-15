@@ -5,7 +5,7 @@ import (
 	"os"
 	"service-record/config"
 	"service-record/controllers"
-	_ "service-record/docs" // Ini penting untuk Swagger
+	"service-record/docs" // Ini penting untuk Swagger
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -16,7 +16,6 @@ import (
 // @title Service Kendaraan API
 // @version 1.0
 // @description API untuk mencatat servis kendaraan dan manajemen foto per transaksi.
-// @host localhost:8080
 // @BasePath /
 func main() {
 	// 1. Inisialisasi Database
@@ -25,19 +24,19 @@ func main() {
 	r := gin.Default()
 
 	r.Use(cors.New(cors.Config{
-    // Fungsi ini akan memeriksa setiap request yang masuk
-    AllowOriginFunc: func(origin string) bool {
-        // Opsi A: Izinkan SEMUA origin secara dinamis (Sama seperti "*", tapi mendukung AllowCredentials)
-        return true 
-        
-        // Opsi B: Atau beri validasi tertentu, misal hanya domain yang mengandung kata 'bengkel'
-        // return strings.Contains(origin, "bengkel")
-    },
-    AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
-    AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization"},
-    ExposeHeaders:    []string{"Content-Length"},
-    AllowCredentials: true,
-}))
+		// Fungsi ini akan memeriksa setiap request yang masuk
+		AllowOriginFunc: func(origin string) bool {
+			// Opsi A: Izinkan SEMUA origin secara dinamis (Sama seperti "*", tapi mendukung AllowCredentials)
+			return true
+
+			// Opsi B: Atau beri validasi tertentu, misal hanya domain yang mengandung kata 'bengkel'
+			// return strings.Contains(origin, "bengkel")
+		},
+		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+	}))
 	port := os.Getenv("PORT")
 
 	if port == "" {
@@ -48,6 +47,7 @@ func main() {
 	// Agar folder uploads bisa diakses via browser (contoh: localhost:8080/uploads/trx_1/nota.jpg)
 	r.Static("/uploads", "./uploads")
 
+	docs.SwaggerInfo.Host = ""
 	// 3. Swagger Route
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	// 4. Grouping Routes

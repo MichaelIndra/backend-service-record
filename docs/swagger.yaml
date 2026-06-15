@@ -214,7 +214,6 @@ definitions:
         example: 10
         type: integer
     type: object
-host: localhost:8080
 info:
   contact: {}
   description: API untuk mencatat servis kendaraan dan manajemen foto per transaksi.
